@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -50,7 +51,12 @@ setMeasuredDimension(dimensions,dimensions);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         drawGameBoard(canvas);
-    drawMarkers(canvas);}
+    drawMarkers(canvas);
+    if(winningLine){
+        paint.setColor(winningLineColor);
+        drawWinningLine(canvas);
+    }
+    }
 
 
 
@@ -140,11 +146,51 @@ setMeasuredDimension(dimensions,dimensions);
 
     }
     private void drawHorizantalLine(Canvas canvas,int row,int col){
-        canvas.drawLine(col,row*cellsize+cellsize/2,
-                cellsize*3,row*cellsize+cellsize/2,
+        canvas.drawLine(col,row*cellsize+(float)cellsize/2,
+                cellsize*3,row*cellsize+(float)cellsize/2,
                 paint);
     }
-    public void setUpGame(Button playAgain, Button home, TextView playerDisplay,String[] names){
+    private void drawVerticalLine(Canvas canvas,int row,int col){
+        canvas.drawLine(col*cellsize+(float)cellsize/2,
+                row , col*cellsize+(float)cellsize/2,cellsize*3,
+                paint);
+    }
+    private void drawDiagonalLinePos(Canvas canvas ){
+        canvas.drawLine(0, cellsize*3,
+                cellsize*3,0,
+                paint);}
+
+    private void drawDiagonalLineNeg(Canvas canvas ){
+        canvas.drawLine(0, 0,
+                cellsize*3,cellsize*3,
+                paint);
+
+    }
+
+private void drawWinningLine(Canvas canvas){
+        int row =game.getWinType()[0];
+        int col =game.getWinType()[1];
+   switch (game.getWinType()[2]){
+       case 1:
+           drawHorizantalLine(canvas,row,col);
+           break;
+       case 2:
+           drawVerticalLine(canvas,row,col);
+           break;
+       case 3:
+           drawDiagonalLineNeg(canvas);
+             break;
+       case 4:
+           drawDiagonalLinePos(canvas);
+           break;
+
+
+
+
+   }
+}
+
+    public void setUpGame(ImageButton playAgain, ImageButton home, TextView playerDisplay, String[] names){
       game.setPlayAgainBTN(playAgain);
       game.setHomeBTN(home);
       game.setPlayerTurn(playerDisplay);

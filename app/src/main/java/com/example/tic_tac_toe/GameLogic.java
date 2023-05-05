@@ -1,15 +1,18 @@
 package com.example.tic_tac_toe;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class GameLogic {
     private int [] [] gameBoard;
     private String[] playerNames = {"Player 1","Player 2"};
+    private int[] winType ={-1,-1,-1};
     private  int player = 1;
-    private Button playAgainBTN;
-    private Button homeBTN;
+    private ImageButton playAgainBTN;
+    private ImageButton homeBTN;
     private TextView playerTurn;
     GameLogic(){
         gameBoard = new int[3][3];
@@ -25,10 +28,10 @@ public class GameLogic {
         if (gameBoard[row-1][col-1]==0){
             gameBoard[row-1][col-1]= player;
             if (player==1){
-                playerTurn.setText((playerNames[1]+"'s Turn"));
+                playerTurn.setText((playerNames[1]+"Turn"));
             }
             else {
-                playerTurn.setText((playerNames[0]+"'s Turn"));
+                playerTurn.setText((playerNames[0]+"Turn"));
             }
             return true;
         }else{
@@ -38,27 +41,32 @@ public class GameLogic {
     }
     public boolean winnerChech() {
         boolean isWinner = false;
+        //horizantal check
         for (int r = 0; r < 3; r++) {
-            if (gameBoard[r][2] == gameBoard[r][1] && gameBoard[r][0] == gameBoard[r][2] &&
+            if (gameBoard[r][0] == gameBoard[r][1] && gameBoard[r][0] == gameBoard[r][2] &&
                     gameBoard[r][0] != 0) {
+                winType=new int[]{r,0,1};
                 isWinner = true;
             }
             ;
         }
         for (int c = 0; c < 3; c++) {
-            if (gameBoard[c][2] == gameBoard[c][1] && gameBoard[c][0] == gameBoard[c][2] &&
-                    gameBoard[c][0] != 0) {
+            if (gameBoard[0][c] == gameBoard[1][c] && gameBoard[2][c] == gameBoard[0][c] &&
+                    gameBoard[0][c] != 0) {
+                winType=new int[]{0,c,2};
                 isWinner = true;
             }
             ;
         }
         if (gameBoard[0][0] == gameBoard[1][1] && gameBoard[0][0] == gameBoard[2][2] &&
                 gameBoard[0][0] != 0) {
+            winType=new int[]{0,2,3};
             isWinner = true;
         }
         ;
         if (gameBoard[2][0] == gameBoard[1][1] && gameBoard[2][0] == gameBoard[0][2] &&
                 gameBoard[2][0] != 0) {
+            winType=new int[]{2,2,4};
             isWinner = true;
 
         }
@@ -74,12 +82,15 @@ public class GameLogic {
             if (isWinner) {
                 playAgainBTN.setVisibility(View.VISIBLE);
                 homeBTN.setVisibility(View.VISIBLE);
-                playerTurn.setText((playerNames[player - 1] + "Won !!!!"));
+                playerTurn.setText((playerNames[player - 1] + "  Won !!!!"));
+                playerTurn.setTextColor(Color.GREEN);
+
                 return true;
             } else if (boardFilled == 9) {
                 playAgainBTN.setVisibility(View.VISIBLE);
                 homeBTN.setVisibility(View.VISIBLE);
                 playerTurn.setText("Tie Game !!!!");
+                playerTurn.setTextColor(Color.RED);
                 return true;
 
             } else {
@@ -92,20 +103,20 @@ public class GameLogic {
         for(int r=0;r<3;r++){
             for(int c=0;c<3;c++){
                 gameBoard[r][c]=0;
-
+                playerTurn.setTextColor(Color.WHITE);
             }
         }
         player =1;
         playAgainBTN.setVisibility(View.GONE);
         homeBTN.setVisibility(View.GONE);
-        playerTurn.setText((playerNames[0]+"'s turn"));
+        playerTurn.setText((playerNames[0]+" turn"));
     }
 
-    public void setPlayAgainBTN(Button playAgainBTN) {
+    public void setPlayAgainBTN(ImageButton playAgainBTN) {
         this.playAgainBTN = playAgainBTN;
     }
 
-    public void setHomeBTN(Button homeBTN) {
+    public void setHomeBTN(ImageButton homeBTN) {
         this.homeBTN = homeBTN;
     }
 
@@ -128,5 +139,9 @@ public class GameLogic {
     public void setPlayerNames(String[] playerNames) {
         this.playerNames = playerNames;
 
+    }
+
+    public int[] getWinType() {
+        return winType;
     }
 }
